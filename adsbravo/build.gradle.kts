@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("maven-publish")
 }
 
 android {
@@ -63,4 +64,17 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
     debugImplementation("androidx.compose.ui:ui-tooling:1.8.2")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.github.DeveloperBeeztel"
+                artifactId = "Adsbravo"
+                version = "v1.0.0"
+            }
+        }
+    }
 }
