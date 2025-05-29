@@ -43,18 +43,17 @@ object AdManager {
             isLoading = true
 
             val token = cfg.token
-            val lang = cfg.lang
-            val ip = "79.150.221.93"
+            val lang = appContext.resources.configuration.locales[0].language
             val rawUserAgent = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36"
             val userAgent = URLEncoder.encode(rawUserAgent, StandardCharsets.UTF_8.toString())
             val sourceId = cfg.sourceId
-            val referer = cfg.referer
+            val referer = appContext.packageName
             val secret = cfg.secret
             val uid = getOrCreateUid(appContext)
             val subAge = System.currentTimeMillis() / 1000
 
-            val finalUrl = "http://feed01.feedgarum.com/$token?" +
-                    "lang=$lang&ip=$ip&ua=$userAgent&sourceid=$sourceId" +
+            val finalUrl = "http://dspfeed.adsbravo.com/$token" + "/no-ip?" +
+                    "lang=$lang&ua=$userAgent&sourceid=$sourceId" +
                     "&referer=$referer&secret=$secret&uid=$uid&subage=$subAge"
 
             CoroutineScope(Dispatchers.IO).launch {

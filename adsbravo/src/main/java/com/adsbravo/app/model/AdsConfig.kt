@@ -4,6 +4,4 @@ data class AdsConfig(
     val token: String,
     val sourceId: String,
     val secret: String,
-    val referer: String,
-    val lang: String = "es"
 )

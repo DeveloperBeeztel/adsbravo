@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitInstance {
     val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl("http://feed01.feedgarum.com/") // Dominio base (se sobreescribe con @Url)
+            .baseUrl("http://dspfeed.adsbravo.com/") // Dominio base (se sobreescribe con @Url)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
