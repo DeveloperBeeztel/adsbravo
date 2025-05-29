@@ -1,0 +1,8 @@
+jdk:
+  - openjdk17
+
+before_install:
+  - echo "Skipping app module for JitPack build"
+
+install:
+  - ./gradlew :adsbravo:assembleRelease

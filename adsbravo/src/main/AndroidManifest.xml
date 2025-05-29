@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity android:name=".InterstitialActivity"
+            android:theme="@style/Theme.InterstitialFullScreen" />
+        <activity android:name=".RewardedActivity"
+            android:theme="@style/Theme.PruebaNativeAds" />
+        <activity android:name=".OpenAppActivity"
+            android:theme="@style/Theme.TransparentActivityTheme" />
+    </application>
+
+</manifest>
