@@ -9,6 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import coil.load
+import com.adsbravo.app.model.AdType
 import com.adsbravo.app.util.AdManager
 
 class OpenAppActivity : AppCompatActivity() {
@@ -43,7 +44,7 @@ class OpenAppActivity : AppCompatActivity() {
         adAppName = findViewById(R.id.app_name)
         adAppIcon = findViewById(R.id.app_icon)
 
-        val adData = AdManager.consumeAd()
+        val adData = AdManager.consumeAd(AdType.OPEN_APP)
         if (adData == null) {
             finish()
             return

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import coil.load
 import androidx.core.net.toUri
+import com.adsbravo.app.model.AdType
 import com.adsbravo.app.util.AdManager
 
 class InterstitialActivity : AppCompatActivity() {
@@ -39,7 +40,7 @@ class InterstitialActivity : AppCompatActivity() {
         adTitle = findViewById(R.id.ad_title)
         adText = findViewById(R.id.ad_text)
 
-        val adData = AdManager.consumeAd()
+        val adData = AdManager.consumeAd(AdType.INTERSTITIAL)
         if (adData == null) {
             finish()
             return

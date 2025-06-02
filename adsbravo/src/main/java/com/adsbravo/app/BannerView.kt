@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.net.toUri
 import coil.load
+import com.adsbravo.app.model.AdType
 import com.adsbravo.app.util.AdManager
 
 class BannerView @JvmOverloads constructor(
@@ -50,12 +51,11 @@ class BannerView @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        // Evita fugas de memoria
         handler.removeCallbacks(refreshRunnable)
     }
 
     fun loadAd() {
-        val adData = AdManager.consumeAd() ?: return
+        val adData = AdManager.consumeAd(AdType.BANNER) ?: return
 
         adIcon.load(adData.iconUrl)
         adTitle.text = adData.title
@@ -65,5 +65,7 @@ class BannerView @JvmOverloads constructor(
             val intent = Intent(Intent.ACTION_VIEW, adData.clickUrl.toUri())
             context.startActivity(intent)
         }
+
+        Ads.loadBanner("")
     }
 }

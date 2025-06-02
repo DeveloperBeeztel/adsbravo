@@ -3,6 +3,8 @@ package com.adsbravo.app
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +13,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import coil.load
+import com.adsbravo.app.model.AdType
 import com.adsbravo.app.util.AdManager
 
 class CollapsibleBannerView @JvmOverloads constructor(
@@ -30,6 +33,16 @@ class CollapsibleBannerView @JvmOverloads constructor(
     private val adTitle: TextView
     private val adText: TextView
     private val adIcon: ImageView
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val refreshInterval = 40_000L // 40 segundos
+
+    private val refreshRunnable = object : Runnable {
+        override fun run() {
+            loadAd()
+            handler.postDelayed(this, refreshInterval)
+        }
+    }
 
     init {
         LayoutInflater.from(context).inflate(R.layout.collapsible_banner_view, this, true)
@@ -51,11 +64,17 @@ class CollapsibleBannerView @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        loadAd()
+        // Comienza el ciclo de actualización
+        refreshRunnable.run()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        handler.removeCallbacks(refreshRunnable)
     }
 
     private fun loadAd() {
-        val adData = AdManager.consumeAd() ?: return
+        val adData = AdManager.consumeAd(AdType.COLLAPSIBLE_BANNER) ?: return
 
         // Expanded content
         bannerImage.load(adData.imageUrl)
@@ -76,6 +95,8 @@ class CollapsibleBannerView @JvmOverloads constructor(
         minimizeButton.setOnClickListener {
             collapseBanner()
         }
+
+        Ads.loadCollapsibleBanner("")
     }
 
     private fun collapseBanner() {

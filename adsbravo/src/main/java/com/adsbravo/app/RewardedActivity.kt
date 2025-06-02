@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import coil.load
+import com.adsbravo.app.model.AdType
 import com.adsbravo.app.util.AdManager
 import com.adsbravo.app.util.RewardManager
 
@@ -48,7 +49,7 @@ class RewardedActivity : AppCompatActivity() {
         adTitle = findViewById(R.id.ad_title)
         adText = findViewById(R.id.ad_text)
 
-        val adData = AdManager.consumeAd()
+        val adData = AdManager.consumeAd(AdType.REWARDED)
         if (adData == null) {
             finish()
             return

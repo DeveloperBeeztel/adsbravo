@@ -3,8 +3,10 @@ package com.adsbravo.app
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.adsbravo.app.model.AdType
 import com.adsbravo.app.model.AdsConfig
 import com.adsbravo.app.util.AdManager
+import com.adsbravo.app.util.AdManager.loadAdManager
 import com.adsbravo.app.util.AppLifecycleObserver
 import com.adsbravo.app.util.RewardManager
 
@@ -17,6 +19,16 @@ object Ads {
     fun init(context: Context, config: AdsConfig) {
         this.config = config
         AdManager.initialize(context, config)
+        loadBanner("")
+        loadCollapsibleBanner("")
+    }
+
+    private fun loadAd(sourceId: String, adType: AdType) {
+        loadAdManager(sourceId, adType)
+    }
+
+    fun loadInterstitial(sourceId: String) {
+        loadAd(sourceId, AdType.INTERSTITIAL)
     }
 
     fun showInterstitial(context: Context) {
@@ -25,12 +37,24 @@ object Ads {
         context.startActivity(intent)
     }
 
+    fun loadRewarded(sourceId: String) {
+        loadAd(sourceId, AdType.REWARDED)
+    }
+
     fun showRewarded(context: Context, onReward: () -> Unit) {
         RewardManager.onRewardObtained = onReward
 
         val intent = Intent(context, RewardedActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
+    }
+
+    fun loadBanner(sourceId: String) {
+        loadAd(sourceId, AdType.BANNER)
+    }
+
+    fun loadCollapsibleBanner(sourceId: String) {
+        loadAd(sourceId, AdType.COLLAPSIBLE_BANNER)
     }
 
     fun initOpenApp(context: Context) {
@@ -45,6 +69,7 @@ object Ads {
                 if (openAppCount % 2 == 1) {
                     currentOpenAppActivity?.finish()
 
+                    loadAd("", AdType.OPEN_APP)
                     val intent = Intent(context, OpenAppActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(intent)
