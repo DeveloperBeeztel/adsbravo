@@ -112,8 +112,15 @@ object AdManager {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val json = prefs.getString("ad_${adType.name}", null)
         val timestamp = prefs.getLong("ad_${adType.name}_timestamp", 0L)
-        if (json != null && System.currentTimeMillis() - timestamp <= MAX_AD_AGE_MS) {
-            return gson.fromJson(json, object : TypeToken<AdData>() {}.type)
+
+        val age = System.currentTimeMillis() - timestamp
+        if (json != null) {
+            if (age <= MAX_AD_AGE_MS) {
+                return gson.fromJson(json, object : TypeToken<AdData>() {}.type)
+            } else {
+                Log.d("AdManager", "Ad [$adType] caducado, eliminado de prefs")
+                clearAdFromPrefs(adType)
+            }
         }
         return null
     }
