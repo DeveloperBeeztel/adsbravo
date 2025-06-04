@@ -74,7 +74,7 @@ class CollapsibleBannerView @JvmOverloads constructor(
     }
 
     private fun loadAd() {
-        val adData = AdManager.consumeAd(AdType.COLLAPSIBLE_BANNER) ?: return
+        val adData = AdManager.consumeAd(AdType.COLLAPSIBLE_BANNER, "default_collapsible") ?: return
 
         // Expanded content
         bannerImage.load(adData.imageUrl)

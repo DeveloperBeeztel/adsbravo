@@ -19,8 +19,8 @@ object Ads {
     fun init(context: Context, config: AdsConfig) {
         this.config = config
         AdManager.initialize(context, config)
-        loadBanner("")
-        loadCollapsibleBanner("")
+        loadBanner("default_banner")
+        loadCollapsibleBanner("default_collapsible")
     }
 
     private fun loadAd(sourceId: String, adType: AdType) {
@@ -31,8 +31,9 @@ object Ads {
         loadAd(sourceId, AdType.INTERSTITIAL)
     }
 
-    fun showInterstitial(context: Context) {
+    fun showInterstitial(context: Context, sourceId: String) {
         val intent = Intent(context, InterstitialActivity::class.java)
+        intent.putExtra("source_id", sourceId)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
     }
@@ -41,10 +42,11 @@ object Ads {
         loadAd(sourceId, AdType.REWARDED)
     }
 
-    fun showRewarded(context: Context, onReward: () -> Unit) {
+    fun showRewarded(context: Context, sourceId: String, onReward: () -> Unit) {
         RewardManager.onRewardObtained = onReward
 
         val intent = Intent(context, RewardedActivity::class.java)
+        intent.putExtra("source_id", sourceId)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
     }
@@ -69,7 +71,9 @@ object Ads {
                 if (openAppCount % 2 == 1) {
                     currentOpenAppActivity?.finish()
 
-                    loadAd("", AdType.OPEN_APP)
+                    val sourceId = "open_app"
+                    loadAd(sourceId, AdType.OPEN_APP)
+
                     val intent = Intent(context, OpenAppActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(intent)

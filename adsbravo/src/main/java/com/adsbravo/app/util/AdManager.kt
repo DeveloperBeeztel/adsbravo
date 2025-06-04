@@ -13,12 +13,13 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.UUID
 import androidx.core.content.edit
+import com.adsbravo.app.model.AdKey
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 object AdManager {
-    private val adsMap = mutableMapOf<AdType, AdData?>()
-    private val loadingMap = mutableMapOf<AdType, Boolean>()
+    private val adsMap = mutableMapOf<AdKey, AdData?>()
+    private val loadingMap = mutableMapOf<AdKey, Boolean>()
     private lateinit var appContext: Context
     private var config: AdsConfig? = null
     private val gson = Gson()
@@ -31,36 +32,38 @@ object AdManager {
     }
 
     fun loadAdManager(sourceId: String, adType: AdType) {
-        // Si ya hay uno cargado en memoria, no cargamos
-        if (adsMap[adType] != null || loadingMap[adType] == true) return
+        val key = AdKey(adType, sourceId)
 
-        // Intentar cargar desde prefs
-        val ad = loadAdFromPrefs(adType)
+        if (adsMap[key] != null || loadingMap[key] == true) return
+
+        val ad = loadAdFromPrefs(key)
         if (ad != null) {
-            adsMap[adType] = ad
-            Log.d("AdManager", "Ad [$adType] cargado desde prefs")
+            adsMap[key] = ad
+            Log.d("AdManager", "Ad [$adType:$sourceId] cargado desde prefs")
             return
         }
 
-        // Si no hay, cargar desde red
-        fetchAd(adType, sourceId)
+        fetchAd(key)
     }
 
-    fun consumeAd(adType: AdType): AdData? {
-        val ad = adsMap[adType] ?: loadAdFromPrefs(adType)
-        adsMap[adType] = null
-        clearAdFromPrefs(adType)
+    fun consumeAd(adType: AdType, sourceId: String): AdData? {
+        val key = AdKey(adType, sourceId)
+        val ad = adsMap[key] ?: loadAdFromPrefs(key)
+        adsMap[key] = null
+        clearAdFromPrefs(key)
         return ad
     }
 
-    fun clear(adType: AdType) {
-        adsMap[adType] = null
-        clearAdFromPrefs(adType)
+    fun clear(adType: AdType, sourceId: String) {
+        val key = AdKey(adType, sourceId)
+        adsMap[key] = null
+        clearAdFromPrefs(key)
     }
 
-    private fun fetchAd(adType: AdType, sourceId: String) {
+    private fun fetchAd(key: AdKey) {
+        val (adType, sourceId) = key
         config?.let { cfg ->
-            loadingMap[adType] = true
+            loadingMap[key] = true
 
             val token = cfg.token
             val lang = appContext.resources.configuration.locales[0].language
@@ -84,52 +87,52 @@ object AdManager {
                     if (response.isSuccessful) {
                         val ad = response.body()
                         if (ad != null) {
-                            adsMap[adType] = ad
-                            saveAdToPrefs(adType, ad)
-                            Log.d("AdManager", "Ad [$adType] cargado y guardado")
+                            adsMap[key] = ad
+                            saveAdToPrefs(key, ad)
+                            Log.d("AdManager", "Ad [$adType:$sourceId] cargado y guardado")
                         }
                     } else {
-                        Log.e("AdManager", "Error cargando [$adType]: ${response.code()}")
+                        Log.e("AdManager", "Error cargando [$adType:$sourceId]: ${response.code()}")
                     }
                 } catch (e: Exception) {
-                    Log.e("AdManager", "Excepción cargando [$adType]: ${e.message}")
+                    Log.e("AdManager", "Excepción cargando [$adType:$sourceId]: ${e.message}")
                 } finally {
-                    loadingMap[adType] = false
+                    loadingMap[key] = false
                 }
             }
         }
     }
 
-    private fun saveAdToPrefs(adType: AdType, ad: AdData) {
+    private fun saveAdToPrefs(key: AdKey, ad: AdData) {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit {
-            putString("ad_${adType.name}", gson.toJson(ad))
-            putLong("ad_${adType.name}_timestamp", System.currentTimeMillis())
+            putString("ad_${key.type.name}_${key.sourceId}", gson.toJson(ad))
+            putLong("ad_${key.type.name}_${key.sourceId}_timestamp", System.currentTimeMillis())
         }
     }
 
-    private fun loadAdFromPrefs(adType: AdType): AdData? {
+    private fun loadAdFromPrefs(key: AdKey): AdData? {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val json = prefs.getString("ad_${adType.name}", null)
-        val timestamp = prefs.getLong("ad_${adType.name}_timestamp", 0L)
+        val json = prefs.getString("ad_${key.type.name}_${key.sourceId}", null)
+        val timestamp = prefs.getLong("ad_${key.type.name}_${key.sourceId}_timestamp", 0L)
 
         val age = System.currentTimeMillis() - timestamp
         if (json != null) {
             if (age <= MAX_AD_AGE_MS) {
                 return gson.fromJson(json, object : TypeToken<AdData>() {}.type)
             } else {
-                Log.d("AdManager", "Ad [$adType] caducado, eliminado de prefs")
-                clearAdFromPrefs(adType)
+                Log.d("AdManager", "Ad caducado [$key], eliminado")
+                clearAdFromPrefs(key)
             }
         }
         return null
     }
 
-    private fun clearAdFromPrefs(adType: AdType) {
+    private fun clearAdFromPrefs(key: AdKey) {
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit {
-            remove("ad_${adType.name}")
-            remove("ad_${adType.name}_timestamp")
+            remove("ad_${key.type.name}_${key.sourceId}")
+            remove("ad_${key.type.name}_${key.sourceId}_timestamp")
         }
     }
 

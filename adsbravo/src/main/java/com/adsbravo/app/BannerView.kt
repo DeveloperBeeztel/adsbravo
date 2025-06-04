@@ -55,7 +55,7 @@ class BannerView @JvmOverloads constructor(
     }
 
     fun loadAd() {
-        val adData = AdManager.consumeAd(AdType.BANNER) ?: return
+        val adData = AdManager.consumeAd(AdType.BANNER, "default_banner") ?: return
 
         adIcon.load(adData.iconUrl)
         adTitle.text = adData.title

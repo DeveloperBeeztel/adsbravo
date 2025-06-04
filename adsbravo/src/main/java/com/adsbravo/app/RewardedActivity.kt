@@ -33,8 +33,7 @@ class RewardedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-            }
+            override fun handleOnBackPressed() {}
         }
         onBackPressedDispatcher.addCallback(this, callback)
 
@@ -49,13 +48,16 @@ class RewardedActivity : AppCompatActivity() {
         adTitle = findViewById(R.id.ad_title)
         adText = findViewById(R.id.ad_text)
 
-        val adData = AdManager.consumeAd(AdType.REWARDED)
+        // Obtener el sourceId del intent
+        val sourceId = intent.getStringExtra("source_id") ?: ""
+
+        val adData = AdManager.consumeAd(AdType.REWARDED, sourceId)
         if (adData == null) {
             finish()
             return
         }
 
-        // Load ad content
+        // Mostrar anuncio
         adImage.load(adData.imageUrl)
         adIcon.load(adData.iconUrl)
         adTitle.text = adData.title
@@ -75,7 +77,6 @@ class RewardedActivity : AppCompatActivity() {
             val intent = Intent(Intent.ACTION_VIEW, adData.clickUrl.toUri())
             startActivity(intent)
         }
-
     }
 
     private fun startCountdown() {

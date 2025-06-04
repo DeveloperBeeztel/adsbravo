@@ -26,21 +26,22 @@ class InterstitialActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-            }
+            override fun handleOnBackPressed() {}
         }
         onBackPressedDispatcher.addCallback(this, callback)
 
         setContentView(R.layout.activity_interstitial_ad)
 
         closeButton = findViewById(R.id.closeButton)
-
         adImage = findViewById(R.id.ad_image)
         adIcon = findViewById(R.id.ad_icon)
         adTitle = findViewById(R.id.ad_title)
         adText = findViewById(R.id.ad_text)
 
-        val adData = AdManager.consumeAd(AdType.INTERSTITIAL)
+        // Obtener el sourceId del intent
+        val sourceId = intent.getStringExtra("source_id") ?: ""
+
+        val adData = AdManager.consumeAd(AdType.INTERSTITIAL, sourceId)
         if (adData == null) {
             finish()
             return
@@ -52,22 +53,18 @@ class InterstitialActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Load ad content
         adImage.load(adData.imageUrl)
         adIcon.load(adData.iconUrl)
         adTitle.text = adData.title
         adText.text = adData.text
 
-        // Mostrar el botón de cerrar después de 5 segundos
         Handler(Looper.getMainLooper()).postDelayed({
-            val closeButton = findViewById<FrameLayout>(R.id.closeButton)
             val params = closeButton.layoutParams as ConstraintLayout.LayoutParams
 
             val marginInDp = 8
             val marginPx = (marginInDp * resources.displayMetrics.density).toInt()
 
             val showLeft = (0..1).random() == 0
-
             if (showLeft) {
                 params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID
                 params.marginStart = marginPx
@@ -82,7 +79,6 @@ class InterstitialActivity : AppCompatActivity() {
             closeButton.visibility = FrameLayout.VISIBLE
         }, 5000)
 
-        // Cerrar la actividad al presionar la X
         closeButton.setOnClickListener {
             finish()
         }

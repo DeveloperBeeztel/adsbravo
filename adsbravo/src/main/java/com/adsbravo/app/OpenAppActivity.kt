@@ -44,7 +44,7 @@ class OpenAppActivity : AppCompatActivity() {
         adAppName = findViewById(R.id.app_name)
         adAppIcon = findViewById(R.id.app_icon)
 
-        val adData = AdManager.consumeAd(AdType.OPEN_APP)
+        val adData = AdManager.consumeAd(AdType.OPEN_APP, "open_app")
         if (adData == null) {
             finish()
             return
