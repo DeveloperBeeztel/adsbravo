@@ -47,6 +47,7 @@ object AdManager {
     }
 
     fun consumeAd(adType: AdType, sourceId: String): AdData? {
+        Log.d("AdManager", "Ad [$adType:$sourceId] consumido")
         val key = AdKey(adType, sourceId)
         val ad = adsMap[key] ?: loadAdFromPrefs(key)
         adsMap[key] = null

@@ -96,7 +96,7 @@ class CollapsibleBannerView @JvmOverloads constructor(
             collapseBanner()
         }
 
-        Ads.loadCollapsibleBanner("")
+        Ads.loadCollapsibleBanner("default_collapsible")
     }
 
     private fun collapseBanner() {

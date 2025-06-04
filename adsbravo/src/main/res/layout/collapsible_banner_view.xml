@@ -3,7 +3,7 @@
     android:id="@+id/bannerContainer"
     android:layout_width="0dp"
     android:layout_height="390dp"
-    android:background="#000"
+    android:background="#212121"
     android:padding="12dp"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent">
@@ -76,7 +76,7 @@
                 android:id="@+id/bannerButton"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:background="@drawable/circle_background_big"
+                android:background="@drawable/openapp_circle_background"
                 android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

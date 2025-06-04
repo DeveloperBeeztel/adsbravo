@@ -66,6 +66,6 @@ class BannerView @JvmOverloads constructor(
             context.startActivity(intent)
         }
 
-        Ads.loadBanner("")
+        Ads.loadBanner("default_banner")
     }
 }
