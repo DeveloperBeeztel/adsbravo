@@ -80,7 +80,7 @@ class RewardedActivity : AppCompatActivity() {
     }
 
     private fun startCountdown() {
-        val duration = 10_000L
+        val duration = 15_000L
         val maxProgress = 100
 
         progressBar.max = maxProgress
@@ -99,6 +99,7 @@ class RewardedActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
             rewardGiven = true
             animateRewardText()
+            progressBar.visibility = View.GONE
             closeButton.visibility = View.VISIBLE
         }, duration)
     }
