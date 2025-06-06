@@ -37,8 +37,6 @@ class CollapsibleBannerView @JvmOverloads constructor(
     private val handler = Handler(Looper.getMainLooper())
     private val refreshInterval = 40_000L // 40 segundos
 
-    private var isCollapsed = false
-
     private val refreshRunnable = object : Runnable {
         override fun run() {
             loadAd()
@@ -121,18 +119,6 @@ class CollapsibleBannerView @JvmOverloads constructor(
         expandedContent.visibility = GONE
         collapsedContent.visibility = VISIBLE
         minimizeButton.visibility = GONE
-
-        isCollapsed = true
-        requestLayout() // importante → para que onMeasure se vuelva a llamar
-    }
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val desiredHeightDp = if (isCollapsed) 80 else 390
-        val desiredHeightPx = desiredHeightDp.dpToPx(context)
-
-        val heightSpec = MeasureSpec.makeMeasureSpec(desiredHeightPx, MeasureSpec.EXACTLY)
-
-        super.onMeasure(widthMeasureSpec, heightSpec)
     }
 
     private fun Int.dpToPx(context: Context): Int =

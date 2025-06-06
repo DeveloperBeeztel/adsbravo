@@ -68,14 +68,4 @@ class BannerView @JvmOverloads constructor(
 
         Ads.loadBanner("default_banner")
     }
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val desiredHeightPx = 80.dpToPx(context)
-        val heightSpec = MeasureSpec.makeMeasureSpec(desiredHeightPx, MeasureSpec.EXACTLY)
-
-        super.onMeasure(widthMeasureSpec, heightSpec)
-    }
-
-    private fun Int.dpToPx(context: Context): Int =
-        (this * context.resources.displayMetrics.density).toInt()
 }
