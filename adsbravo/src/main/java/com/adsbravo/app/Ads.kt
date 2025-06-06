@@ -34,7 +34,6 @@ object Ads {
     fun showInterstitial(context: Context, sourceId: String) {
         val intent = Intent(context, InterstitialActivity::class.java)
         intent.putExtra("source_id", sourceId)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
     }
 
@@ -47,7 +46,6 @@ object Ads {
 
         val intent = Intent(context, RewardedActivity::class.java)
         intent.putExtra("source_id", sourceId)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
     }
 
@@ -75,7 +73,6 @@ object Ads {
                     loadAd(sourceId, AdType.OPEN_APP)
 
                     val intent = Intent(context, OpenAppActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(intent)
                 }
             }
