@@ -15,11 +15,9 @@ import androidx.core.net.toUri
 import coil.load
 import com.adsbravo.app.model.AdType
 import com.adsbravo.app.util.AdManager
-import com.adsbravo.app.util.CollapseListener
 
 class CollapsibleBannerView @JvmOverloads constructor(
     context: Context,
-    private val collapseListener: CollapseListener? = null,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
 ) : ConstraintLayout(context, attrs, defStyle) {
@@ -121,8 +119,6 @@ class CollapsibleBannerView @JvmOverloads constructor(
         expandedContent.visibility = GONE
         collapsedContent.visibility = VISIBLE
         minimizeButton.visibility = GONE
-
-        collapseListener?.onCollapsed()
     }
 
     private fun Int.dpToPx(context: Context): Int =
