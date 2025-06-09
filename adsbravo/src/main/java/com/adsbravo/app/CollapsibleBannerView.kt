@@ -37,6 +37,9 @@ class CollapsibleBannerView @JvmOverloads constructor(
     private val handler = Handler(Looper.getMainLooper())
     private val refreshInterval = 40_000L // 40 segundos
 
+    // Callback para notificar cambios de estado
+    var onCollapseCallback: ((Boolean) -> Unit)? = null
+
     private val refreshRunnable = object : Runnable {
         override fun run() {
             loadAd()
@@ -119,6 +122,8 @@ class CollapsibleBannerView @JvmOverloads constructor(
         expandedContent.visibility = GONE
         collapsedContent.visibility = VISIBLE
         minimizeButton.visibility = GONE
+
+        onCollapseCallback?.invoke(true)
     }
 
     private fun Int.dpToPx(context: Context): Int =
